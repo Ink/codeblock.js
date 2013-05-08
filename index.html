@@ -7,10 +7,14 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
     <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--<link rel="stylesheet" type="text/css" href="https://raw.github.com/Filepicker/codeblock.js/master/codeblock.css" media="screen" />-->
+    <link rel="stylesheet" type="text/css" href="stylesheets/codeblock.css" media="screen" />
+
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <title>Codeblock.js by Filepicker</title>
+    <title>Codeblock.js by Filepicker.io</title>
   </head>
 
   <body>
@@ -19,7 +23,7 @@
 
         <header>
           <h1>Codeblock.js</h1>
-          <h2>Javascript Codeblock!</h2>
+          <h2>Editable, runnable javascript code blocks</h2>
         </header>
 
         <section id="downloads" class="clearfix">
@@ -31,41 +35,140 @@
         <hr>
 
         <section id="main_content">
-          <h3>Welcome to GitHub Pages.</h3>
+          <h3>Why?</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>Humans learn better when they can <em>play</em> with what they're working with, when they can poke at it and understand what happens to B when you change A. The browser provides a wonderful place where examples can be interactive, and yet most documentation for javascript APIs doesn't make use of these capabilities.</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+<p>Codeblock.js turns example code into editable, runnable code blocks that visitors can poke at and play with to better understand your API. For example, try playing with the parameters in the example below:</p>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<div class="codeblock" id="sandstorm_demo">
+//Try playing with the parameters
+var R=0, s=5; x1=.1; y1=.05, x2=.25, y2=.24, x3=1.6,
+    y3=.24, x4=300, y4=200, x5=300, y5=200;
+//Try various tags here (p, a, code, etc.)
+//var elems=document.getElementsByTagName("h3");
+var elems=document.querySelectorAll("#sandstorm_demo span");
+var l=elems.length;
+var i, c;
+var A = function (){
+    for(i=0; i-l; i++){
+        c=elems[i].style; c.position='absolute';
+        c.left=(Math.sin(R*x1+i*x2+x3)*x4+x5)+"px";
+        c.top=(Math.cos(R*y1+i*y2+y3)*y4+y5)+"px";
+    }
+    R++;
+};
+//Loop
+setInterval(function(){A()},s);
+console.log("Sandstorm!");
+</div>
 
-<h3>Designer Templates</h3>
+<hr/>
+<h3>Using Codeblock.js</h3>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>Codeblock.js is a jQuery plugin that uses the Ace code editor, and therefore requires including both jQuery and Ace.</p>
 
-<h3>Rather Drive Stick?</h3>
+<pre><code>&lt;!--Thanks Google!--&gt;
+&lt;script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"&gt;&lt;/script&gt;
+&lt;!--Ajax source from github, you probably should host it yourself--&lt;
+&lt;script src="//rawgithub.com/ajaxorg/ace-builds/master/src-noconflict/ace.js" type="text/javascript" charset="utf-8"&gt;&lt;/script&gt;
+&lt;!--The codeblock plugin--&lt;
+&lt;script src="codeblock.js"&gt;&lt;/script&gt;</code></pre>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<p>Once the scripts are imported, you can use the <code>$.codeblock</code> call to transform any piece of text into an editable, runnable code sample. Try it out:</p>
 
-<h3>Authors and Contributors</h3>
+<div class="codeblock">
+$("#basic-codeblock-example").codeblock();
+console.log("Success");
+</div>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<div class="protoblock" id="basic-codeblock-example">//Press "Run" above to turn this sample into a codeblock
+//Then try running this code to undo
+console.log("Destroying...");
+window.setTimeout(function(){
+    $("#basic-codeblock-example").codeblock("destroy");
+}, 1000);
+</div>
+<hr/>
+<h3>API</h3>
+<p>The codeblock.js api is very similar to the api of <a href="http://jqueryui.com/" target="jqueryui">jQuery UI</a> widgets, so if you are familiar with those the syntax should feel natural.</p>
 
-<h3>Support or Contact</h3>
+<h4>Instantiation</h4>
+<div class="codeblock">
+//To reset:
+//$("#api-instantiation").codeblock("destroy");
+//Below are the default parameters. Try changing one or all of them.
+$("#api-instantiation").codeblock({
+    editable: true,
+    //initial console text
+    consoleText: "Output from the example appears here",
+    consoleClass: "codeblock-console-text",
+    runButtonText: "run",
+    runButtonClass: "codeblock-console-run",
+    console: true,
+    resetable: true,
+    runnable: true,
+    //The ace theme to use
+    editorTheme: "ace/theme/dawn",
+    lineNumbers: true
+});
+</div>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<div class="protoblock" id="api-instantiation">console.log("A simple codeblock");</div>
+
+<h4>Methods</h4>
+<div class="codeblock">
+$("#api-methods").codeblock();
+console.log("The current text of the codeblock is:");
+console.log($("#api-methods").codeblock("text"));
+
+//Set the text of the codeblock
+//$("#api-methods").codeblock("text", "console.log('Dynamically set code!')");
+
+//Reset and run the codeblock programatically
+//$("#api-methods").codeblock("reset");
+//$("#api-methods").codeblock("run");
+
+//Get or change properties of the codeblock
+//$("#api-methods").codeblock("editable", false);
+//console.log($("#api-methods").codeblock("editable"));
+//$("#api-methods").codeblock("runnable", false);
+//console.log($("#api-methods").codeblock("runnable"));
+
+//Get the underlying ACE Editor for more complex actions
+//$("#api-methods").codeblock("editor").moveCursorTo(0,10);
+</div>
+
+<div class="protoblock" id="api-methods">console.log("Use the methods above");
+console.log("to manipulate this codeblock");</div>
+
+<h4>Events</h4>
+<div class="codeblock">
+$("#api-events").codeblock().on("codeblock.run", function(){
+    console.log("The event codeblock was run");
+}).on("codeblock.reset", function(){
+    console.log("The event codeblock was reset");
+}).on("codeblock.console", function(e, text){
+    console.log("The text '"+text+"' was written to the console");
+});
+</div>
+
+<div class="protoblock" id="api-events">console.log("Play with this codeblock");
+console.log("and see what events are thrown");</div>
+
         </section>
 
         <footer>
-          Codeblock.js is maintained by <a href="https://github.com/Filepicker">Filepicker</a><br>
+          Codeblock.js is maintained by <a href="https://github.com/Filepicker">Filepicker.io</a><br>
           This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
         </footer>
 
         
       </div>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="javascripts/ace.js"></script>
+    <script src="https://raw.github.com/Filepicker/codeblock.js/master/codeblock.js" type="text/javascript"></script>
+    <script src="javascripts/main.js"></script>
   </body>
 </html>

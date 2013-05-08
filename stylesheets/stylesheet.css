@@ -337,6 +337,28 @@ footer a:hover {
 * html .clearfix {height: 1%;}
 .clearfix {display: block;}
 
+/*Custom*/
+.codeblock-container {
+    margin-bottom: 20px;
+}
+
+.protoblock {
+    white-space: pre;
+    color: #F2F2F2;
+    background-color: #303030;
+    border: none;
+    padding: 25px;
+    display: block;
+    text-shadow: none;
+    overflow: auto;
+    margin-bottom: 20px;
+}
+
+.protoblock.codeblock-editor {
+    padding: 0;
+    margin-bottom: 0px;
+}
+
 /* #Media Queries
 ================================================== */
 
